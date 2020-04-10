@@ -1,19 +1,19 @@
 package dev.dules;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.ArrayList;
+import java.util.Calendar;
 
-/**
- * Hello world!
- */
 public final class App {
     private App() {
     }
 
-    private static final Logger logger = LogManager.getLogger();
-
-    public static void main(String[] args) {
-        Foo foo = new Foo();
-        logger.info(ObjectUtil.buildHeader(foo));
+    public static void main(final String[] args) {
+        final Foo foo = new Foo()
+            .setId(1)
+            .setName("bar")
+            .setDate(Calendar.getInstance().getTime())
+            .setList(new ArrayList<>());
+        final String csv = ObjectUtil.toCSV(foo);
+        System.out.println(csv);
     }
 }

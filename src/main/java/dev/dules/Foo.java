@@ -15,32 +15,36 @@ public class Foo {
         return id;
     }
 
-    public void setId(final int id) {
+    public Foo setId(final int id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
+    public Foo setName(final String name) {
         this.name = name;
+        return this;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public void setDate(final Date date) {
+    public Foo setDate(final Date date) {
         this.date = date;
+        return this;
     }
 
     public List<String> getList() {
         return Collections.unmodifiableList(list);
     }
 
-    public void setList(final List<String> list) {
+    public Foo setList(final List<String> list) {
         this.list = list;
+        return this;
     }
 
     public void addToList(final String s){
