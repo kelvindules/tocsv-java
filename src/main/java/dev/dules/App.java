@@ -1,6 +1,5 @@
 package dev.dules;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public final class App {
@@ -11,9 +10,7 @@ public final class App {
         final Foo foo = new Foo()
             .setId(1)
             .setName("bar")
-            .setDate(Calendar.getInstance().getTime())
-            .setList(new ArrayList<>());
-        final EasyCSV csvBuilder = new EasyCSV(foo);
-        System.out.println(csvBuilder.build());
+            .setDate(Calendar.getInstance().getTime());
+        System.out.println(EasyCSV.builder().setSource(foo).build());
     }
 }

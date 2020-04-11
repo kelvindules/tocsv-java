@@ -1,15 +1,11 @@
 package dev.dules;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 public class Foo {
     private int id;
     private String name;
     private Date date;
-    private List<String> list;
 
     public int getId() {
         return id;
@@ -37,20 +33,4 @@ public class Foo {
         this.date = date;
         return this;
     }
-
-    public List<String> getList() {
-        return Collections.unmodifiableList(list);
-    }
-
-    public Foo setList(final List<String> list) {
-        this.list = list;
-        return this;
-    }
-
-    public void addToList(final String s){
-        if(this.list == null){
-            this.list = new ArrayList<>();
-        }
-        this.list.add(s);
-    }    
 }
