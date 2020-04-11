@@ -13,7 +13,7 @@ public final class App {
             .setName("bar")
             .setDate(Calendar.getInstance().getTime())
             .setList(new ArrayList<>());
-        final String csv = ObjectUtil.toCSV(foo);
-        System.out.println(csv);
+        final EasyCSV csvBuilder = new EasyCSV(foo);
+        System.out.println(csvBuilder.build());
     }
 }
