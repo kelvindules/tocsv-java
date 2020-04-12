@@ -93,20 +93,6 @@ public class EasyCSV {
         return ClassUtils.isPrimitiveOrWrapper(c) || FormatterRegistry.containsClassFormatter(c);
     }
 
-    // do we need this?
-    public Object castToSupported(final Object object) {
-        if (ClassUtils.isPrimitiveOrWrapper(object.getClass()) && !ClassUtils.isPrimitiveWrapper(object.getClass())) {
-            return ClassUtils.primitiveToWrapper(object.getClass()).cast(object);
-        }
-        final Class<?> type = extraSupportedTypes.stream().filter(t -> t.equals(object.getClass())).findFirst()
-                .orElse(null);
-        if (type != null) {
-            return type.cast(object);
-        } else {
-            return new UnsupportedClassVersionError();
-        }
-    }
-
     public String getFormattedValue(final Object object) {
         final FieldFormatter customFormatter = FormatterRegistry.find(object.getClass());
         if (customFormatter != null) {
