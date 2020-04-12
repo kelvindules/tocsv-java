@@ -6,10 +6,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import dev.dules.exception.InvalidCSVSourceException;
+import dev.dules.formatter.FieldFormatter;
+import dev.dules.formatter.FormatterRegistry;
 
 public class EasyCSV {
     private static final Logger logger = LogManager.getLogger();
@@ -36,8 +39,7 @@ public class EasyCSV {
     private String header;
     private String rows;
 
-    private final List<Class<?>> supportedTypes = Arrays.asList(byte.class, char.class, short.class, int.class,
-            Integer.class, long.class, float.class, double.class, boolean.class, String.class, Date.class);
+    private final List<Class<?>> extraSupportedTypes = Arrays.asList(String.class, Date.class);
 
     private void setDefaults() {
         this.separator = ",";
@@ -61,24 +63,26 @@ public class EasyCSV {
     }
 
     private void setFields() {
-        if(this.source != null) {
+        if (this.source != null) {
             this.fields = Arrays.asList(this.source.getClass().getDeclaredFields());
         }
     }
+
     public List<Field> getFields() {
         return fields;
     }
 
     public EasyCSV buildHeader() {
-        this.header = getFields().stream().map(Field::getName).collect(Collectors.joining(separator));
+        this.header = getFields().stream().filter(f -> isTypeSupported(f.getType())).map(Field::getName)
+                .collect(Collectors.joining(separator));
         return this;
     }
 
     public EasyCSV buildRows() {
-        this.rows = getFields().stream().map(f -> {
+        this.rows = getFields().stream().filter(f -> isTypeSupported(f.getType())).map(f -> {
             try {
                 f.setAccessible(true);
-                return isTypeSupported(f.getType()) ? castToSupported(f.get(source)).toString() : "";
+                return getFormattedValue(f.get(source));
             } catch (final IllegalArgumentException | IllegalAccessException e) {
                 logger.error(e.getMessage());
                 return "";
@@ -88,12 +92,31 @@ public class EasyCSV {
     }
 
     public boolean isTypeSupported(final Class<?> c) {
-        return supportedTypes.contains(c);
+        return ClassUtils.isPrimitiveOrWrapper(c) || extraSupportedTypes.contains(c);
     }
 
+    // do we need this?
     public Object castToSupported(final Object object) {
-        // TODO: shouldn't switch to String.class on orElse
-        return supportedTypes.stream().filter(t -> t.equals(object.getClass())).findFirst().orElse(String.class)
-                .cast(object);
+        if (ClassUtils.isPrimitiveOrWrapper(object.getClass()) && !ClassUtils.isPrimitiveWrapper(object.getClass())) {
+            return ClassUtils.primitiveToWrapper(object.getClass()).cast(object);
+        }
+        final Class<?> type = extraSupportedTypes.stream().filter(t -> t.equals(object.getClass())).findFirst()
+                .orElse(null);
+        if (type != null) {
+            return type.cast(object);
+        } else {
+            return new UnsupportedClassVersionError();
+        }
+    }
+
+    public String getFormattedValue(final Object object) {
+        final FieldFormatter customFormatter = FormatterRegistry.find(object.getClass());
+        if (customFormatter != null) {
+            return customFormatter.format(object, "dd/MM/yyyy");
+        } else if (ClassUtils.isPrimitiveOrWrapper(object.getClass())) {
+            return object.getClass().cast(object).toString();
+        } else {
+            return "";
+        }
     }
 }

@@ -7,10 +7,7 @@ public final class App {
     }
 
     public static void main(final String[] args) {
-        final Foo foo = new Foo()
-            .setId(1)
-            .setName("bar")
-            .setDate(Calendar.getInstance().getTime());
+        final Foo foo = new Foo().setId(1).setDb(1.1).setName("bar").setDate(Calendar.getInstance().getTime());
         System.out.println(EasyCSV.builder().setSource(foo).build());
     }
 }

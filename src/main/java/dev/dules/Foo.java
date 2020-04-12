@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class Foo {
     private int id;
+    private double db;
     private String name;
     private Date date;
 
@@ -13,6 +14,15 @@ public class Foo {
 
     public Foo setId(final int id) {
         this.id = id;
+        return this;
+    }
+
+    public double getDb() {
+        return db;
+    }
+
+    public Foo setDb(final double db) {
+        this.db = db;
         return this;
     }
 
