@@ -2,7 +2,6 @@ package dev.dules;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,8 +38,6 @@ public class EasyCSV {
     private String header;
     private String rows;
 
-    private final List<Class<?>> extraSupportedTypes = Arrays.asList(String.class, Date.class);
-
     private void setDefaults() {
         this.separator = ",";
         this.header = "";
@@ -55,6 +52,7 @@ public class EasyCSV {
         this.buildHeader().buildRows();
         return String.format("%s%n%s", header, rows);
     }
+    // TODO: add something like a isBuilt check
 
     public EasyCSV setSource(final Object source) {
         this.source = source;
@@ -92,7 +90,7 @@ public class EasyCSV {
     }
 
     public boolean isTypeSupported(final Class<?> c) {
-        return ClassUtils.isPrimitiveOrWrapper(c) || extraSupportedTypes.contains(c);
+        return ClassUtils.isPrimitiveOrWrapper(c) || FormatterRegistry.containsClassFormatter(c);
     }
 
     // do we need this?

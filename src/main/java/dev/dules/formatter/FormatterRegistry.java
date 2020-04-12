@@ -26,6 +26,10 @@ public class FormatterRegistry {
         return Collections.unmodifiableList(formatters);
     }
 
+    public static boolean containsClassFormatter(final Class<?> clazz) {
+        return formatters.stream().anyMatch(f -> f.getType().equals(clazz));
+    }
+
     public static FieldFormatter find(final Class<?> clazz) {
         return formatters.stream().filter(f -> f.getType().equals(clazz)).findFirst().orElse(null);
     }
