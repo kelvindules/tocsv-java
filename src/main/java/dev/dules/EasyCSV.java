@@ -18,7 +18,7 @@ import dev.dules.formatter.FormatterRegistry;
 public class EasyCSV {
     private static final Logger logger = LogManager.getLogger();
 
-    public EasyCSV(Object source) {
+    public EasyCSV(final Object source) {
         if (source == null) {
             throw new IllegalArgumentException();
         }
