@@ -8,6 +8,6 @@ public final class App {
 
     public static void main(final String[] args) {
         final Foo foo = new Foo().setId(1).setDb(1.1).setName("bar").setDate(Calendar.getInstance().getTime());
-        System.out.println(EasyCSV.builder().setSource(foo).build());
+        EasyCSV.builder().setSource(foo).setFieldPattern("date", "yyyy/MM/dd").build();
     }
 }

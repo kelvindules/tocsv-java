@@ -4,7 +4,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ClassUtils;
@@ -39,6 +41,7 @@ public class EasyCSV {
     private List<Field> fields;
     private String header;
     private String rows;
+    private Map<String, String> fieldFormatPattern;
 
     private void setDefaults() {
         this.separator = ",";
@@ -77,6 +80,14 @@ public class EasyCSV {
         return Collections.unmodifiableList(fields);
     }
 
+    public EasyCSV setFieldPattern(final String fieldName, final String pattern) {
+        if (this.fieldFormatPattern == null) {
+            this.fieldFormatPattern = new HashMap<>();
+        }
+        this.fieldFormatPattern.put(fieldName, pattern);
+        return this;
+    }
+
     private EasyCSV buildHeader() {
         this.header = getFields().stream().filter(f -> isTypeSupported(f.getType())).map(Field::getName)
                 .collect(Collectors.joining(separator));
@@ -87,7 +98,7 @@ public class EasyCSV {
         this.rows = getFields().stream().filter(f -> isTypeSupported(f.getType())).map(f -> {
             try {
                 f.setAccessible(true);
-                return getFormattedValue(f.get(source));
+                return getFormattedValue(f.getName(), f.get(source));
             } catch (final IllegalArgumentException | IllegalAccessException e) {
                 logger.error(e.getMessage());
                 return "";
@@ -100,12 +111,16 @@ public class EasyCSV {
         return ClassUtils.isPrimitiveOrWrapper(c) || FormatterRegistry.containsClassFormatter(c);
     }
 
-    public String getFormattedValue(final Object object) {
-        final FieldFormatter customFormatter = FormatterRegistry.find(object.getClass());
+    public String getFormattedValue(final String fieldName, final Object fieldValue) {
+        final FieldFormatter customFormatter = FormatterRegistry.find(fieldValue.getClass());
         if (customFormatter != null) {
-            return customFormatter.format(object, "dd/MM/yyyy");
-        } else if (ClassUtils.isPrimitiveOrWrapper(object.getClass())) {
-            return object.getClass().cast(object).toString();
+            String pattern = fieldFormatPattern.get(fieldName);
+            if (pattern == null) {
+                pattern = customFormatter.getDefaultPattern();
+            }
+            return customFormatter.format(fieldValue, pattern);
+        } else if (ClassUtils.isPrimitiveOrWrapper(fieldValue.getClass())) {
+            return fieldValue.getClass().cast(fieldValue).toString();
         } else {
             return "";
         }

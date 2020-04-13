@@ -11,4 +11,9 @@ public class StringFormatter implements FieldFormatter {
         return String.valueOf(object);
     }
 
+    @Override
+    public String getDefaultPattern() {
+        return "";
+    }
+
 }

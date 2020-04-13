@@ -14,4 +14,9 @@ public class DateFormatter implements FieldFormatter {
         return new SimpleDateFormat(pattern).format(object);
     }
 
+    @Override
+    public String getDefaultPattern() {
+        return "dd/MM/yyyy";
+    }
+
 }
