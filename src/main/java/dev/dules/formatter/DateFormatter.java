@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DateFormatter implements FieldFormatter {
-
+    @Override
     public Class<?> getType() {
         return Date.class;
     }

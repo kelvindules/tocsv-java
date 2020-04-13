@@ -1,7 +1,7 @@
 package dev.dules.formatter;
 
 public class StringFormatter implements FieldFormatter {
-
+    @Override
     public Class<?> getType() {
         return String.class;
     }
