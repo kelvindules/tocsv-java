@@ -1,7 +1,9 @@
 package dev.dules;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,9 +54,11 @@ public class EasyCSV {
         this.buildHeader().buildRows();
         return String.format("%s%n%s", header, rows);
     }
-    // TODO: add something like a isBuilt check
 
     public EasyCSV setSource(final Object source) {
+        if (source == null) {
+            throw new UnsupportedOperationException("can't set a null source object");
+        }
         this.source = source;
         setFields();
         return this;
@@ -67,16 +71,19 @@ public class EasyCSV {
     }
 
     public List<Field> getFields() {
-        return fields;
+        if (fields == null) {
+            fields = new ArrayList<>();
+        }
+        return Collections.unmodifiableList(fields);
     }
 
-    public EasyCSV buildHeader() {
+    private EasyCSV buildHeader() {
         this.header = getFields().stream().filter(f -> isTypeSupported(f.getType())).map(Field::getName)
                 .collect(Collectors.joining(separator));
         return this;
     }
 
-    public EasyCSV buildRows() {
+    private EasyCSV buildRows() {
         this.rows = getFields().stream().filter(f -> isTypeSupported(f.getType())).map(f -> {
             try {
                 f.setAccessible(true);
