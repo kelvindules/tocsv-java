@@ -110,7 +110,13 @@ public class EasyCSV {
     public boolean isTypeSupported(final Class<?> c) {
         return ClassUtils.isPrimitiveOrWrapper(c) || FormatterRegistry.containsClassFormatter(c);
     }
-
+    
+    /***
+     * 
+     * @param fieldName A case-sensitive field name.
+     * @param fieldValue The pattern that can be used to achieve the desired string format. The formatter implementation may or may not use it.
+     * @return A formatted String
+     */
     public String getFormattedValue(final String fieldName, final Object fieldValue) {
         final FieldFormatter customFormatter = FormatterRegistry.find(fieldValue.getClass());
         if (customFormatter != null) {

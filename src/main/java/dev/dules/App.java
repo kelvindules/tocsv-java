@@ -7,7 +7,13 @@ public final class App {
     }
 
     public static void main(final String[] args) {
-        final Foo foo = new Foo().setId(1).setDb(1.1).setName("bar").setDate(Calendar.getInstance().getTime());
-        EasyCSV.builder().setSource(foo).setFieldPattern("date", "yyyy/MM/dd").build();
+        final Foo foo = new Foo().setId(1)
+            .setDb(1.1)
+            .setName("bar")
+            .setDate(Calendar.getInstance().getTime());
+        EasyCSV.builder()
+            .setSource(foo)
+            .setFieldPattern("date", "yyyy/MM/dd")
+            .build();
     }
 }
